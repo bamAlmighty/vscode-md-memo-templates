@@ -5,6 +5,7 @@ await build({
   bundle: true,
   platform: "node",
   target: "node18",
+  format: "cjs",
   outfile: "dist/extension.js",
   external: ["vscode"]
 });

@@ -1,3 +1,4 @@
+console.log(">>> TOP OF FILE REACHED <<<");
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
@@ -80,7 +81,8 @@ function loadTemplateFile(
 }
 
 function activate(context: vscode.ExtensionContext) {
-  const memoExt = vscode.extensions.getExtension("svsool.markdown-memo");
+  console.log("Markdown Memo Templates EXTENSION ACTIVATED");
+  const memoExt = vscode.extensions.getExtension("svsool.markdown-memo-api");
   if (!memoExt) return;
 
   memoExt.activate().then(api => {

@@ -11,7 +11,9 @@
     "vscode": "^1.80.0"
   },
   "activationEvents": [
-    "onExtension:svsool.markdown-memo"
+    "onLanguage:markdown",
+    "onCommand:memoTemplates.previewVariables",
+    "onExtension:svsool.markdown-memo-api"
   ],
   "main": "./dist/extension.js",
   "contributes": {
