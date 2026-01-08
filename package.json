@@ -1,0 +1,67 @@
+{
+  "name": "markdown-memo-templates",
+  "displayName": "Markdown Memo Templates",
+  "publisher": "your-name",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:memoTemplates.previewVariables"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "memoTemplates.previewVariables",
+        "title": "Markdown Memo Templates: Preview Template Variables"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Markdown Memo Templates",
+      "properties": {
+        "memoTemplates.templateFolder": {
+          "type": "string",
+          "default": "my-templates"
+        },
+        "memoTemplates.debug": {
+          "type": "boolean",
+          "default": false
+        },
+        "memoTemplates.customVariables": {
+          "type": "object",
+          "default": {}
+        },
+        "memoTemplates.rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": { "type": "string" },
+              "path": { "type": "string" },
+              "template": { "type": "string" },
+              "templateFolder": { "type": "string" },
+              "baseTemplate": { "type": "string" },
+              "frontmatter": { "type": "object" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "package": "npm run build && vsce package",
+    "test": "npm run build && node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.0",
+    "vsce": "^2.15.0",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "mocha": "^10.0.0",
+    "vscode-test": "^1.6.1"
+  }
+}
