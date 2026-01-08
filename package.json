@@ -11,7 +11,7 @@
     "vscode": "^1.80.0"
   },
   "activationEvents": [
-    "onStartupFinished"
+    "onExtension:svsool.markdown-memo"
   ],
   "main": "./dist/extension.js",
   "contributes": {

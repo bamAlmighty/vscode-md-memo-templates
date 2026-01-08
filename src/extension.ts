@@ -13,7 +13,6 @@ interface MemoRule {
   frontmatter?: Record<string, any>;
 }
 
-
 function logDebug(message: string) {
   const config = vscode.workspace.getConfiguration("memoTemplates");
   if (!config.get("debug")) return;
@@ -114,7 +113,9 @@ function activate(context: vscode.ExtensionContext) {
         ? path.join(workspaceFolder, rule.path as string)
         : workspaceFolder;
       const targetPath = path.join(targetDir, fileName + ".md");
-
+      console.log("Matched rule:", rule);
+      console.log("Resolved targetDir:", targetDir);
+      console.log("Resolved targetPath:", targetPath);
       if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
 
       if (!fs.existsSync(targetPath)) {
