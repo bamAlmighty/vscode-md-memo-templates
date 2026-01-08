@@ -4,6 +4,16 @@ import * as fs from "fs";
 
 let outputChannel: vscode.OutputChannel | null = null;
 
+interface MemoRule {
+  pattern: string;
+  path?: string;
+  template?: string;
+  templateFolder?: string;
+  baseTemplate?: string;
+  frontmatter?: Record<string, any>;
+}
+
+
 function logDebug(message: string) {
   const config = vscode.workspace.getConfiguration("memoTemplates");
   if (!config.get("debug")) return;
@@ -75,18 +85,34 @@ function activate(context: vscode.ExtensionContext) {
   if (!memoExt) return;
 
   memoExt.activate().then(api => {
+    // ✅ 1. Register your template provider (REQUIRED)
+    if (api.registerTemplateProvider) {
+      api.registerTemplateProvider("memoTemplates", {
+        provideTemplate: () => {} // You can leave this empty; you only use onDidCreateNote
+      });
+    }
+
+    // 🔍 2. Debug: confirm your settings load correctly
+    const config = vscode.workspace.getConfiguration("memoTemplates");
+    const rules = config.get<MemoRule[]>("rules", []);
+    console.log("Loaded memoTemplates.rules:", rules);
+
     api.onDidCreateNote(async (note: any) => {
       const config = vscode.workspace.getConfiguration("memoTemplates");
-      const rules = config.get("rules") || [];
-      const globalTemplateFolder = config.get("templateFolder") || "templates";
-      const customVars = config.get("customVariables") || {};
+      const rules = config.get<MemoRule[]>("rules", []);
+      const globalTemplateFolder = config.get<string>("templateFolder", "templates");
+      const customVars = config.get<Record<string, string>>("customVariables", {});
 
       const fileName = note.title;
       const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
       if (!workspaceFolder) return;
 
-      const rule = rules.find((r: any) => new RegExp(r.pattern).test(fileName));
-      const targetDir = rule ? path.join(workspaceFolder, rule.path) : workspaceFolder;
+      const rule = rules.find((r: MemoRule) => 
+        new RegExp(r.pattern).test(fileName)
+      );
+      const targetDir = rule?.path
+        ? path.join(workspaceFolder, rule.path as string)
+        : workspaceFolder;
       const targetPath = path.join(targetDir, fileName + ".md");
 
       if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
@@ -123,14 +149,13 @@ function activate(context: vscode.ExtensionContext) {
       }
     });
   });
-
   context.subscriptions.push(
     vscode.commands.registerCommand("memoTemplates.previewVariables", async () => {
       const title = await vscode.window.showInputBox({ prompt: "Enter a note title" });
       if (!title) return;
 
       const config = vscode.workspace.getConfiguration("memoTemplates");
-      const customVars = config.get("customVariables") || {};
+      const customVars = config.get<Record<string, string>>("customVariables", {});
 
       const preview = substituteVars(
         "title: {{title}}\nslug: {{slug}}\ncreatedAt: {{createdAt}}",

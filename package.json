@@ -1,14 +1,13 @@
 {
   "name": "markdown-memo-templates",
   "displayName": "Markdown Memo Templates",
-  "publisher": "your-name",
-  "version": "0.0.1",
+  "publisher": "bamAlmighty",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.80.0"
   },
   "activationEvents": [
-    "onStartupFinished",
-    "onCommand:memoTemplates.previewVariables"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -18,6 +17,7 @@
         "title": "Markdown Memo Templates: Preview Template Variables"
       }
     ],
+    "markdownMemo.templates": true,
     "configuration": {
       "type": "object",
       "title": "Markdown Memo Templates",
